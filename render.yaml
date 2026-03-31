@@ -1,0 +1,31 @@
+services:
+  # Backend — Express + MongoDB
+  - type: web
+    name: bullet-buddy-api
+    runtime: node
+    rootDir: server
+    buildCommand: npm install
+    startCommand: node index.js
+    envVars:
+      - key: MONGO_URI
+        sync: false        # set this manually in Render dashboard
+      - key: JWT_SECRET
+        sync: false        # set this manually in Render dashboard
+      - key: PORT
+        value: 5000
+      - key: FRONTEND_URL
+        sync: false        # set to your frontend URL e.g. https://bullet-buddy-arena.onrender.com
+
+  # Frontend — Vite React (static site)
+  - type: static
+    name: bullet-buddy-arena
+    rootDir: .
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        sync: false        # set to your backend URL e.g. https://bullet-buddy-api.onrender.com/api
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
